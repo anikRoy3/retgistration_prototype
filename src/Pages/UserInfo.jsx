@@ -1,21 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { contextProvider } from '../Context/Provider';
 import { toast } from 'react-hot-toast';
+import Loading from '../Components/Loading';
 
 const UserInfoPage = () => {
     const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(false);
     const userId = localStorage.getItem('userId');
+    const navigate = useNavigate()
 
     useEffect(() => {
+        setLoading(true)
         fetch(`http://localhost:5000/user/${userId}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
                 setUser(data.user);
+                setLoading(false)
             });
     }, []);
+    useEffect(() => {
+        if (!userId) navigate('/')
+    }, [])
 
     const [editMode, setEditMode] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -52,7 +60,8 @@ const UserInfoPage = () => {
                 }
             })
     };
-
+    if(loading) return <Loading/>
+    console.log(user)
     return (
         <div className="flex items-center justify-center h-screen">
             <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden">
@@ -81,6 +90,7 @@ const UserInfoPage = () => {
                                             type="tel"
                                             name="phone"
                                             id="phone"
+                                            defaultValue={user.phone}
                                             {...register('phone', {
                                                 required: 'Phone number is required',
                                                 pattern: {
@@ -127,6 +137,7 @@ const UserInfoPage = () => {
                         <>
                             <h2 className="text-2xl font-semibold text-gray-800 mb-1">{user.name}</h2>
                             <p className="text-gray-600 text-sm mb-2">{user.email}</p>
+                            <p className="text-gray-600 text-sm mb-2 mt-2">Role: {user.role}</p>
                             <hr className="border-gray-200 mb-4" />
                             <div className="flex justify-between">
                                 <div>

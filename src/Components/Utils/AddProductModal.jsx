@@ -5,12 +5,30 @@ import { toast } from 'react-hot-toast';
 export default function AddProductModal({ setProducts }) {
     const { handleSubmit, reset, register, formState: { errors }, } = useForm();
     const [loading, setLoading] = useState(false)
+    const categoryObj = (name, image) => {
+        return { name, image }
+    }
+    const defalutImages = {
+        electronics: 'https://www.polytechnichub.com/wp-content/uploads/2017/04/Electronic.jpg',
+        clothing: 'https://www.greenqueen.com.hk/wp-content/uploads/2021/07/Rental-Fashion-Causes-More-Emissions-Than-Throwing-Clothes-Away-1.jpg',
+        books: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQowST2PcRKEKynt1ePEflf6YBAC0wkorXWeA&usqp=CAU',
+        jerseys: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ46QBXgD_zLZaMUKokMzJw6iEduZuEEE-J5A&usqp=CAU',
+        jeans: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4HhYJxtILLqRyhQy3doWTvoEHHGOpICGx5Q&usqp=CAU',
+        cleaningTools: 'https://static-01.daraz.com.bd/p/53afc615dcdad1748f123842b806d012.jpg',
+        smartWatch: 'https://static-01.daraz.com.bd/p/eaff39f3cf5e7408c4b7c0ae1f84600b.jpg',
+        tShirts: 'https://static-01.daraz.com.bd/p/99f27435f11a4b409b4e9cc4e1cc0b98.jpg'
+    }
 
-    const onSubmit = ({ name, price, description, image }) => {
-        //add product
+    const onSubmit = ({ name, price, description, image, discount, quantity, category }) => {
+        
+        // setCtImage()
         const url = `https://api.imgbb.com/1/upload?key=c6d4d5097ea23cc307de3ef0ba8c19d1`;
         const formData = new FormData();
         formData.append('image', image[0]);
+        const ctObj = categoryObj(category, defalutImages[category])
+        // console.log('main obj', ctObj)
+       
+        // console.log(product)
 
         setLoading(true)
         fetch(url, {
@@ -21,8 +39,12 @@ export default function AddProductModal({ setProducts }) {
             .then(data => {
                 if (data.data.url) {
                     const product = {
-                        name, price, description, image: data.data.url
+                        name, price, description, image: data.data.url,
+                        discount: discount ? discount : 0,
+                        quantity,
+                        category: categoryObj(category, defalutImages[category])
                     }
+                    console.log(product)
                     fetch('http://localhost:5000/products', {
                         method: "POST",
                         headers: { 'Content-type': 'application/json' },
@@ -33,8 +55,8 @@ export default function AddProductModal({ setProducts }) {
                             fetch('http://localhost:5000/products')
                                 .then(res => res.json())
                                 .then(data => setProducts(data.data))
+                            reset()
                             setLoading(false);
-                            setSuccessMessage(data.message)
                             toast.success(data.message)
                             closeModal()
 
@@ -43,15 +65,12 @@ export default function AddProductModal({ setProducts }) {
             })
 
 
-        // reset();
-        // window.closeModal(); // Close the modal after successful form submission
     };
     const closeModal = () => {
         // Get the modal element and close it
         const modal = document.getElementById('my_modal_5');
         modal.close();
     };
-
     return (
         <div>
             {/* Open the modal using window.showModal() method */}
@@ -81,6 +100,17 @@ export default function AddProductModal({ setProducts }) {
                         {errors.price && <span className='text-red-400'>This field is required</span>}
                     </div>
                     <div className="mb-4">
+                        <label htmlFor="discountPrice" className="block text-gray-700 font-medium mb-2">Discount Price</label>
+                        <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            className="w-full p-3 border border-gray-700 rounded-lg"
+                            {...register('discount')}
+                        />
+                    </div>
+
+                    <div className="mb-4">
                         <label htmlFor="description" className="block text-gray-700 font-medium mb-2">Description</label>
                         <textarea
                             id="description"
@@ -91,6 +121,32 @@ export default function AddProductModal({ setProducts }) {
                         />
                         {errors.description && <span className='text-red-400'>This field is required</span>}
                     </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="category" className="block text-gray-700 font-medium mb-2">
+                            Category
+                        </label>
+                        <select
+                            id="category"
+                            name="category"
+                            className="w-full p-3 border border-gray-700 rounded-lg"
+                            {...register('category', { required: true })}
+                        >
+                            <option value="" disabled>Select a category</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="books">Books</option>
+                            <option value="jerseys">Jerseys</option>
+                            <option value="jeans">Jeans</option>
+                            <option value="cleaningTools">Cleaning Tools</option>
+                            <option value="smartWatch">Smart Watch</option>
+                            <option value="tShirts">T-Shirt</option>
+                            {/* Add more options as needed */}
+                        </select>
+                        {errors.category && <span className='text-red-400'>This field is required</span>}
+                    </div>
+
+
                     <div className="mb-4">
                         <label htmlFor="image" className="block text-gray-700 font-medium mb-2">Image</label>
                         <input
@@ -100,6 +156,17 @@ export default function AddProductModal({ setProducts }) {
                             className="file-input-info file-input-bordered file-input-xs w-full max-w-xs"
                         />
                         {errors.iamge && <span className='text-red-400'>This field is required</span>}
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Quantity" className="block text-gray-700 font-medium mb-2">Quantity</label>
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            className="w-full p-3 border border-gray-700 rounded-lg"
+                            {...register('quantity', { required: true })}
+                        />
+                        {errors.quantity && <span className='text-red-400'>This field is required</span>}
                     </div>
                     <div className='flex justify-end'>
                         <input className="bg-blue-500 hover:bg-blue-700 text-white px-4 rounded-md py-1"

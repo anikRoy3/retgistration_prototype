@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [loading, setLoading] = useState(false);
@@ -14,11 +14,28 @@ function Signup() {
   } = useForm();
 
   const navigate = useNavigate()
-
-  const onSubmit = ({ image, name, address, password, email }) => {
+  const location = useLocation()
+  console.log(location, '')
+  const pin = location.pathname.split('/')[3];
+  console.log(pin)
+  // let role = 'user';
+  const [role, setRole]= useState('user')
+  console.log(import.meta.env.VITE_ADMIN_PIN)
+  useEffect(() => {
+    if (pin === import.meta.env.VITE_ADMIN_PIN) {
+      setRole('admin')
+    } else {
+      console.log('come')
+      navigate('/signup')
+    }
+  }, [])
+  console.log(role)
+  const onSubmit = ({ image, name, address, password, email, phone }) => {
+    console.log( role)
     const url = `https://api.imgbb.com/1/upload?key=c6d4d5097ea23cc307de3ef0ba8c19d1`;
     const formData = new FormData();
     formData.append('image', image[0]);
+
     setLoading(true);
     fetch(url, {
       method: 'POST',
@@ -28,10 +45,10 @@ function Signup() {
       .then(data => {
 
         if (data.data.url) {
-          console.log(data.data.url)
+          console.log(data.data.url, role)
           const user = {
             name, address, password, email,
-            imageUrl: data.data.url
+            imageUrl: data.data.url, phone, role
           }
           fetch('http://localhost:5000/register', {
             method: 'POST',
@@ -104,7 +121,7 @@ function Signup() {
                 message: 'Invalid email address',
               },
             })}
-            onBlur={handleInputBlur('email')} 
+            onBlur={handleInputBlur('email')}
           />
           {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
         </div>
@@ -169,11 +186,11 @@ function Signup() {
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
                   message:
-                  'Password must contain at least one letter, one number, and one special character',
+                    'Password must contain at least one letter, one number, and one special character',
                 },
-              })} 
+              })}
               onBlur={handleInputBlur('password')}
-              />
+            />
             <button
               type="button"
               className="absolute top-0 right-0 h-full px-3 flex items-center"

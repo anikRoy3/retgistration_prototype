@@ -1,29 +1,81 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { contextProvider } from '../Context/Provider';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { email, setEmail } = useContext(contextProvider)
+  const { email, setEmail, cart, user, setCart, } = useContext(contextProvider)
+  const navigate = useNavigate()
+  const [key, setKey] = useState('')
+  let count = 0
+  const values = cart ? Object.values(JSON.parse(cart)) : 0
+  if (values) {
+    for (let v of values) {
+      count += v
+    }
+  }
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  console.log('email from navbar', email)
+  const { pathname } = useLocation();
+  console.log('current', pathname)
 
   const handleLogout = () => {
-    const isConfirm = window.confirm("Are you want to logout sure?");
-    console.log('isConfirm', isConfirm)
-    if (isConfirm) localStorage.removeItem('userId');
-    setEmail('')
+    Swal.fire({
+      title: 'Are you want to logout ',
+      icon: 'question',
+      iconHtml: '?',
+      confirmButtonText: 'Yes, Logout',
+      cancelButtonText: 'No.',
+      showCancelButton: true,
+      showCloseButton: true
+    }).then((res) => {
+      if (res.isConfirmed) {
+        localStorage.removeItem('userId');
+        setCart(localStorage.removeItem('cartItems'))
+        setEmail('')
+      }
+    })
+
   }
-  console.log(email)
+
+
+  const searchHandler = () => {
+    if (key) {
+      navigate(`/searchResult/${key}`)
+    }
+
+  }
+
   return (
-    <nav className="bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-3">
+    <nav className="bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-4 sticky top-0 z-10">
       <div className="flex justify-between items-center">
-        <div className="text-white font-bold text-xl">
-          <Link to={'/'}>Registration Prototype</Link>
+        <div className="text-white font-bold text-2xl uppercase">
+          <Link to={'/'}>Cool Shop</Link>
         </div>
+
+        {/* Search bar  */}
+        {(pathname.includes('/products') || pathname.includes('/searchResult')) && <div className="flex items-center md:px-8">
+          < div className="relative flex-grow" >
+            <input
+              type="text"
+              className="lg:w-96 py-2 rounded-md border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 pl-12"
+              placeholder="Search products"
+              onChange={(e) => setKey(e.target.value)}
+            />
+            <button
+              className={`absolute ${!key ? 'btn-disabled bg-gray-300 text-gray-400' : ''}  rounded-md inset-y-0 right-0 px-3 flex items-center bg-blue-300 text-blue-600 py-0 hover:text-gray-600 transition duration-300`}
+              onClick={searchHandler}
+
+            >
+              <i className='fa fa-search'></i>
+            </button>
+          </div>
+        </div>}
+
         <div className="md:hidden">
           <button
             type="button"
@@ -60,12 +112,10 @@ const Navbar = () => {
           </Link>
 
           {
-            email ? <p onClick={handleLogout} className='text-gray-200 cursor-pointer hover:text-gray-300'>Logout <i className="fas fa-sign-out-alt"></i> <Link
-              to="userInfo"
-              className="text-white hover:text-white transition duration-300"
-            >
-              My Profile
-            </Link></p> : <>
+            email ? <>
+
+              <p onClick={handleLogout} className='text-gray-200 cursor-pointer hover:text-gray-300'>Logout <i className="fas fa-sign-out-alt"></i> </p>
+            </> : <>
               <Link
                 to="/signup"
                 className="text-white hover:text-white transition duration-300"
@@ -80,8 +130,34 @@ const Navbar = () => {
               </Link>
             </>
           }
+          {email && <Link to="/orderHistory" className="text-white hover:text-white transition duration-300">
+            Order History
+          </Link>}
+          {user?.role !== 'admin' && <Link to="/cart" className="text-white hover:text-white transition duration-300">
+            <span className="relative inline-block">
+              <i className="fas fa-shopping-cart ml-1 mr-2"></i>
+              <span className="bg-red-500 rounded-full text-white text-xs absolute -top-1 -right-1 px-1">
+                {count}
+              </span>
+            </span>
+          </Link>}
+          {email && <div className="dropdown dropdown-end">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full">
+                <img src={user?.imageUrl} />
+              </div>
+            </label>
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li>
+                <Link to={'/userInfo'} className="justify-between">
+                  Profile
+                  <span className="badge">New</span>
+                </Link>
+              </li>
+            </ul>
+          </div>}
         </div>
-      </div>
+      </div >
 
       {isMenuOpen && (
         <div className="md:hidden mt-3">
@@ -111,7 +187,7 @@ const Navbar = () => {
           </a>
         </div>
       )}
-    </nav>
+    </nav >
   );
 };
 

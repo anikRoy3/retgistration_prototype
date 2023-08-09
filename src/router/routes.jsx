@@ -7,6 +7,13 @@ import ProductPage from "../Pages/Products";
 import ProductDetails from "../Pages/ProductDetails";
 import UserInfoPage from "../Pages/UserInfo";
 import EditUserInfoPage from "../Pages/EditUser";
+import CartPage from "../Pages/CartPage";
+import CheckoutForm from "../Pages/Payment/CheckoutPage";
+import RequireAuth from "../Pages/RequireAuth";
+import NotFound from "../Pages/NotFound";
+import PaymentSuccessPage from "../Pages/Payment/PaymentSucces";
+import OrderHistoryPage from "../Pages/OrderHistory";
+import SearchResults from "../Pages/SearchResult";
 
 const routes = createBrowserRouter([
   {
@@ -18,29 +25,57 @@ const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path:'/signup',
-        element:<Signup/>
+        path: '/signup',
+        element: <Signup />
       },
       {
-        path:'/login',
-        element:<LoginPage/>
+        path: '/signup/admin/:pin',
+        element: <Signup />
       },
       {
-        path:'/products',
-        element:<ProductPage/>
+        path: '/login',
+        element: <LoginPage />
       },
       {
-        path:'/products/:id',
-        element:<ProductDetails/>
+        path: '/products',
+        element: <ProductPage />
       },
       {
-        path:'/userInfo',
-        element:<UserInfoPage/>
+        path: '/productDetails/:id',
+        element: <ProductDetails />
       },
       {
-        path:'/editUser',
-        element:<EditUserInfoPage/>
-      } 
+        path: '/searchResult/:searchKeyword',
+        element: <SearchResults />
+      },
+      {
+        path: '/userInfo',
+        element: <UserInfoPage />
+      },
+      {
+        path: '/editUser',
+        element: <EditUserInfoPage />
+      },
+      {
+        path: '/cart',
+        element: <CartPage />
+      },
+      {
+        path: '/checkout',
+        element: <RequireAuth><CheckoutForm /></RequireAuth>
+      },
+      {
+        path: '/payment/success',
+        element:<PaymentSuccessPage/>
+      },
+      {
+        path: 'orderHistory',
+        element:<OrderHistoryPage/>
+      },
+      {
+        path: '*',
+        element: <NotFound />
+      }
     ],
   },
 ]);

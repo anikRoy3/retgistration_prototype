@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-
+import { motion } from 'framer-motion';
 const Home = () => {
     /* useEffect(() => {
         setupThreeJsBackground();
@@ -20,7 +19,27 @@ const Home = () => {
                         </Link>
                     </div>
                 </div>
-
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                        repeat: Infinity, // Repeat the animation indefinitely
+                        repeatType: 'reverse', // Reverse the animation on each repeat
+                        duration: 1, // Animation duration (seconds)
+                    }}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 p-6 rounded-lg shadow-lg text-white"
+                >
+                    <div className="flex items-center">
+                        <span className="text-4xl font-bold mr-2">25%</span>
+                        <div className="flex flex-col">
+                            <span className="font-semibold uppercase">Discount</span>
+                            <span className="text-xs">Limited Time Offer</span>
+                        </div>
+                    </div>
+                    <p className="text-xs mt-2">
+                        Use the code <span className="font-bold">SUMMER25</span> at checkout
+                    </p>
+                </motion.div>
                 {/* Testimonials Section */}
                 <div className="bg-gradient-to-b from-purple-700 to-purple-400">
                     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
