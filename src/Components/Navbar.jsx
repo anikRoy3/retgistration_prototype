@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useLocation, useNavigate, } from 'react-router-dom';
 import { contextProvider } from '../Context/Provider';
 import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { email, setEmail, cart, user, setCart, } = useContext(contextProvider)
-  const navigate = useNavigate()
-  const [key, setKey] = useState('')
+  const { email, setEmail, cart, user, setCart, setKey,key  } = useContext(contextProvider)
   let count = 0
   const values = cart ? Object.values(JSON.parse(cart)) : 0
   if (values) {
@@ -15,13 +13,12 @@ const Navbar = () => {
       count += v
     }
   }
-
+  const wishtlistsCount = JSON.parse(localStorage.getItem('wishlists')).length
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const { pathname } = useLocation();
-  console.log('current', pathname)
 
   const handleLogout = () => {
     Swal.fire({
@@ -42,13 +39,8 @@ const Navbar = () => {
 
   }
 
+  
 
-  const searchHandler = () => {
-    if (key) {
-      navigate(`/searchResult/${key}`)
-    }
-
-  }
 
   return (
     <nav className="bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-4 sticky top-0 z-10">
@@ -68,7 +60,6 @@ const Navbar = () => {
             />
             <button
               className={`absolute ${!key ? 'btn-disabled bg-gray-300 text-gray-400' : ''}  rounded-md inset-y-0 right-0 px-3 flex items-center bg-blue-300 text-blue-600 py-0 hover:text-gray-600 transition duration-300`}
-              onClick={searchHandler}
 
             >
               <i className='fa fa-search'></i>
@@ -131,8 +122,9 @@ const Navbar = () => {
             </>
           }
           {email && <Link to="/orderHistory" className="text-white hover:text-white transition duration-300">
-            Order History
+            Order History {/* ৳ */}
           </Link>}
+
           {user?.role !== 'admin' && <Link to="/cart" className="text-white hover:text-white transition duration-300">
             <span className="relative inline-block">
               <i className="fas fa-shopping-cart ml-1 mr-2"></i>
@@ -153,6 +145,11 @@ const Navbar = () => {
                   Profile
                   <span className="badge">New</span>
                 </Link>
+              </li>
+              <li>
+                {
+                  email && <Link to={'/wishlists'}>  My Wishlists ({wishtlistsCount})</Link>
+                }
               </li>
             </ul>
           </div>}

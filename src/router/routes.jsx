@@ -14,6 +14,7 @@ import NotFound from "../Pages/NotFound";
 import PaymentSuccessPage from "../Pages/Payment/PaymentSucces";
 import OrderHistoryPage from "../Pages/OrderHistory";
 import SearchResults from "../Pages/SearchResult";
+import WishLists from "../Pages/WishLists";
 
 const routes = createBrowserRouter([
   {
@@ -69,8 +70,12 @@ const routes = createBrowserRouter([
         element:<PaymentSuccessPage/>
       },
       {
-        path: 'orderHistory',
+        path: '/orderHistory',
         element:<OrderHistoryPage/>
+      },
+      {
+        path: '/wishlists',
+        element:<WishLists/>
       },
       {
         path: '*',

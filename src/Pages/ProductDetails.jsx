@@ -6,7 +6,7 @@ import Loading from '../Components/Loading';
 const ProductDetails = () => {
 
     const [product, setProduct] = useState({})
-    const { image, name, description, price, discount } = product;
+    const { image, name, description, price, discount, ratings } = product;
     const discountPercentage = (parseInt(discount) / parseInt(price) * 100).toFixed(2);
     const updatedPrice = parseInt(price) - parseInt(discount)
     const [loading, setLaoding] = useState(false)
@@ -37,7 +37,7 @@ const ProductDetails = () => {
                         Back to Products
                     </Link>
                 </div>
-              
+
                 <section className="flex flex-col md:flex-row">
                     <div className="mb-4 md:mb-0 md:mr-6">
                         <img
@@ -53,8 +53,15 @@ const ProductDetails = () => {
                     <div className="">
                         <div className="text-2xl font-semibold mb-2">{name}</div>
                         <p className="text-gray-600 mb-4">{description}</p>
+                        <div className=''>
+                            {
+                                new Array(ratings).fill(null).map((_, index) => (
+                                    <i key={index} className='fa fa-star text-yellow-400'></i>
+                                ))
+                            }
+                        </div>
                         <div className="flex items-center justify-between mb-4">
-                            <div className="text-3xl font-bold px-2">
+                            <div className="text-3xl font-bold py-2">
                                 <p className="text-lg font-semibold text-green-600">
                                     {parseInt(discount) ? (
                                         <span>
@@ -69,7 +76,7 @@ const ProductDetails = () => {
                                 </div>
                             </div>
                         </div>
-                       {/*  <motion.button
+                        {/*  <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"

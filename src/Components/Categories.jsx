@@ -12,7 +12,7 @@ const Categories = ({ products, setFilterItems, filterItems }) => {
     <div className="bg-gray-100 py-8">
       <div className="px-8">
         <div className='flex items-center mb-9'>
-          <h2 className="text-2xl font-semibold mb-4">Explore Categories:</h2>
+          <h2 className="text-2xl font-semibold mb-4">Categories:</h2>
           <div
             onClick={() => setFilterItems([])}
             className={` ms-4 cursor-pointer px-8 flex justify-between p-2 rounded shadow hover:shadow-md transition duration-300 ${filterItems.length === 0 ? "bg-gray-500 text-white" : "bg-white"}`}

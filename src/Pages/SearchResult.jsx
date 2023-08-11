@@ -38,12 +38,14 @@ const SearchResults = () => {
                 <p className='text-center'>No result found for this keyword...</p>
             </div>}
             <div className="text-center mt-8 ">
-                <Link to="/" className="btn ">
-                    Back to Home
+                <Link to="/products" className="btn ">
+                    See All Products
                 </Link>
             </div>
         </div>
     );
 };
+
+
 
 export default SearchResults;

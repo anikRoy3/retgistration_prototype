@@ -1,6 +1,13 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from 'framer-motion';
+// import video from '../assets/vOne.mp4'
+// import video1 from '../assets/vOne.mp4'
+// import video2 from '../assets/vTwo.mp4'
+import video3 from '../assets/vThree.mp4'
+// import video4 from '../assets/vFour.mp4'
+// import video5 from '../assets/vFive.mp4'
+// import video6 from '../assets/vSix.mp4'
 const Home = () => {
     /* useEffect(() => {
         setupThreeJsBackground();
@@ -10,8 +17,17 @@ const Home = () => {
         <>
             <div className="min-h-screen bg-gray-100">
                 {/* Hero Section */}
-                <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-purple-700 to-purple-400">
-                    <div className="p-8 rounded-lg bg-opacity-70 backdrop-blur-md backdrop-filter text-white text-center">
+                <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+                    <video
+                        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+                        autoPlay
+                        muted
+                        loop
+                    >
+                        <source src={video3} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div className="p-8 rounded-lg bg-opacity-70 backdrop-blur-md backdrop-filter text-white text-center relative z-10">
                         <h1 className="text-5xl font-bold mb-8">Welcome to Fancy Shop</h1>
                         <p className="text-xl mb-8">Discover our amazing products.</p>
                         <Link to={'/products'} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded shadow-lg">

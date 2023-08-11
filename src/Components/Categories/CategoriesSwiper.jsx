@@ -7,8 +7,8 @@ import 'swiper/css/pagination';
 
 
 
-export default function CategoriesSwiper({ products,setFilterItems, filterItems, handleFilter }) {
-  console.log(products, filterItems, handleFilter)
+export default function CategoriesSwiper({ products, setFilterItems, filterItems, handleFilter }) {
+  // console.log(products, filterItems, handleFilter)
   return (
     <Swiper
       slidesPerView={1}
@@ -49,10 +49,11 @@ export default function CategoriesSwiper({ products,setFilterItems, filterItems,
 
       }}
     >
-      <SwiperSlide onClick={()=> setFilterItems([])} className={`ms-4 cursor-pointer px-8 flex justify-between p-2 rounded shadow hover:shadow-md transition duration-300 ${filterItems.length === 0 ? "bg-gray-500 text-white" : "bg-white"}`}>All</SwiperSlide>
-      {products.map(({ category: { name, image } }) => {
+      <SwiperSlide onClick={() => setFilterItems([])} className={`ms-4 cursor-pointer px-8 flex justify-between p-2 rounded shadow hover:shadow-md transition duration-300 ${filterItems.length === 0 ? "bg-gray-500 text-white" : "bg-white"}`}>All</SwiperSlide>
+      {products.map((product) => {
+        const { category: { name, image }, _id }= product
         return (
-          <SwiperSlide>
+          <SwiperSlide key={_id}>
             <div
               key={image}
               onClick={() => handleFilter(name)}
@@ -65,7 +66,8 @@ export default function CategoriesSwiper({ products,setFilterItems, filterItems,
                 alt={name}
               />
 
-            </div></SwiperSlide>
+            </div>
+          </SwiperSlide>
 
 
         );

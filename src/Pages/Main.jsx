@@ -7,10 +7,6 @@ import { useState } from "react";
 
 const Main = () => {
 
-    //Search handler
-
-
-
     return (
         <div>
             <Navbar />

@@ -1,21 +1,23 @@
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { contextProvider } from '../Context/Provider';
 import Swal from 'sweetalert2'
 
 
 const ProductCard = ({ product, setProducts }) => {
 
-  const { name, description, image, price, _id, discount, quantity } = product
+  const { name, description, image, price, _id, discount, quantity, category, ratings } = product;
   const discountPercentange = (parseInt(discount) / parseInt(price) * 100).toFixed(2);
-  const updatedPrice = parseInt(price) - parseInt(discount)
+  const updatedPrice = parseInt(price) - parseInt(discount);
   const [isEditMode, setIsEditMode] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState('');
-  const { setCart, role } = useContext(contextProvider)
-
+  const { setCart, role, email } = useContext(contextProvider);
+  const [isInWishList, setIsInWishList] = useState(false);
+  const { setIds } = useContext(contextProvider)
+  const navigate = useNavigate()
   const handleEditClick = () => {
     setIsEditMode(true);
   };
@@ -111,7 +113,45 @@ const ProductCard = ({ product, setProducts }) => {
     setCart(localStorage.getItem('cartItems'))
     toast.success('Product add to cart successfully.')
   }
-  
+  const location = useLocation()
+
+  //handle wishlist
+  const handleWishlist = (_id) => {
+    // setToogleWishlist(!toggleWishlist);
+    console.log(email, 'email')
+    if (!email) {
+      navigate('/login');
+      return
+    }
+    setIsInWishList(!isInWishList)
+    const wishlists = JSON.parse(localStorage.getItem('wishlists'));
+    if (!wishlists) {
+      localStorage.setItem('wishlists', JSON.stringify(new Array(_id)))
+      setIds(JSON.stringify(new Array(_id)))
+    } else {
+      if (wishlists.includes(_id)) {
+        const newWishlists = wishlists.filter((l) => l !== _id);
+        localStorage.setItem('wishlists', JSON.stringify((newWishlists)))
+        setIds(JSON.stringify((newWishlists)))
+      } else {
+        localStorage.setItem('wishlists', JSON.stringify(([...wishlists, _id])))
+        setIds(JSON.stringify(([...wishlists, _id])))
+      }
+
+    }
+
+  }
+
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('wishlists')).includes(_id)) {
+      setIsInWishList(true)
+    } else {
+      setIsInWishList(false)
+    }
+  }, [isInWishList])
+
+
+
   return (
     <>
 
@@ -120,7 +160,7 @@ const ProductCard = ({ product, setProducts }) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -50 }}
         className="bg-white rounded-lg hover:bg-slate-100 shadow-lg p-4 mx-4 my-4 flex flex-col justify-between"
-        style={{ height: '400px' }}
+        style={{ height: '500px' }}
         onSubmit={handleSubmit(handleSaveClick)}
       >
         {
@@ -133,7 +173,7 @@ const ProductCard = ({ product, setProducts }) => {
           </button>
         }
         <div className="aspect-w-3 aspect-h-2 mb-4">
-          <>
+          <div className='flex items-center justify-between'>
             {
               parseInt(discount) && !isEditMode > 0 ? <motion.div
                 className="bg-gradient-to-r from-pink-500 to-purple-500 px-2 rounded-lg shadow-lg text-white"
@@ -156,7 +196,17 @@ const ProductCard = ({ product, setProducts }) => {
                 </div>
               </motion.div> : ""
             }
-          </>
+            <div>
+              {
+                isInWishList ? <img onClick={() => handleWishlist(_id)} src="https://cdn-icons-png.flaticon.com/128/833/833472.png"
+                  className='w-9 h-9 text-red-600' alt="" /> : <img
+                  onClick={() => handleWishlist(_id)}
+                  className='w-9 h-9' src="https://cdn-icons-png.flaticon.com/128/1077/1077035.png" alt="" />
+              }
+
+
+            </div>
+          </div>
           {isEditMode ? (
             <>
               {image ? (
@@ -232,7 +282,6 @@ const ProductCard = ({ product, setProducts }) => {
               {errors.price && <span className='text-red-400'>This field is required</span>}
             </div>
           </>
-
         ) : (
           <p className="text-lg font-semibold text-green-600">
             {
@@ -258,6 +307,17 @@ const ProductCard = ({ product, setProducts }) => {
         ) : (
           <p className="text-lg font-semibold text-green-600">Quantity: {quantity}</p>
         )}
+
+        <div className=''>
+          {
+            new Array(ratings).fill(null).map((_, index) => (
+              <i key={index} className='fa fa-star text-yellow-400'></i>
+            ))
+          }
+        </div>
+        <div>
+          <kbd className="kbd kbd-xs bg-orange-600 text-white">{category.name}</kbd>
+        </div>
         {isEditMode ? (
           <>
             <textarea
@@ -297,7 +357,7 @@ const ProductCard = ({ product, setProducts }) => {
             </button>}
           </div>
         )}
-      </motion.form>
+      </motion.form >
     </>
 
   );

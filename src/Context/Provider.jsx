@@ -10,7 +10,10 @@ const Provider = ({ children }) => {
   const userId = localStorage.getItem('userId');
   const [cart, setCart] = useState(localStorage.getItem('cartItems'));
   const [user, setUser] = useState(null);
+  const [key, setKey] = useState('')
+  const [ids, setIds] = useState(localStorage.getItem('wishlists'))
 
+  console.log('key from provider', key)
   useEffect(() => {
     if (userId) {
       setLoading(true);
@@ -42,7 +45,11 @@ const Provider = ({ children }) => {
     cart,
     setCart,
     role,
-    user
+    user,
+    key,
+    setKey,
+    ids,
+    setIds
   };
 
   return (
