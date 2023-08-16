@@ -15,6 +15,7 @@ import PaymentSuccessPage from "../Pages/Payment/PaymentSucces";
 import OrderHistoryPage from "../Pages/OrderHistory";
 import SearchResults from "../Pages/SearchResult";
 import WishLists from "../Pages/WishLists";
+import ResetPassword from "../Pages/ResetPassword";
 
 const routes = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ const routes = createBrowserRouter([
       {
         path: '/wishlists',
         element:<WishLists/>
+      },
+      {
+        path: `/reset-password/:id`,
+        element:<ResetPassword/>
       },
       {
         path: '*',

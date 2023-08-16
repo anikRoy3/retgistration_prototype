@@ -129,8 +129,8 @@ const ProductCard = ({ product, setProducts }) => {
       localStorage.setItem('wishlists', JSON.stringify(new Array(_id)))
       setIds(JSON.stringify(new Array(_id)))
     } else {
-      if (wishlists.includes(_id)) {
-        const newWishlists = wishlists.filter((l) => l !== _id);
+      if (wishlists && wishlists.includes(_id)) {
+        const newWishlists = wishlists?.filter((l) => l !== _id);
         localStorage.setItem('wishlists', JSON.stringify((newWishlists)))
         setIds(JSON.stringify((newWishlists)))
       } else {
@@ -143,7 +143,7 @@ const ProductCard = ({ product, setProducts }) => {
   }
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem('wishlists')).includes(_id)) {
+    if (JSON.parse(localStorage.getItem('wishlists'))?.includes(_id)) {
       setIsInWishList(true)
     } else {
       setIsInWishList(false)

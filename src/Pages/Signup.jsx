@@ -101,7 +101,7 @@ function Signup() {
             {...register('name', { required: true })}
             onBlur={handleInputBlur('name')}
           />
-          {errors.name && <span className='text-red-400'>This field is required</span>}
+          {errors.name && <span className='text-red-400'>{errors.name.message}</span>}
         </div>
 
         <div className="mb-4">

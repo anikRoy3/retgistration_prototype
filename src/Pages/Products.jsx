@@ -16,7 +16,6 @@ const ProductPage = () => {
   const [filterItems, setFilterItems] = useState([]);
   const [searchPd, setSearchPd] = useState([])
 
-  // console.log('filterItems', filterItems)
   useEffect(() => {
     setLaoding(true)
     fetch('http://localhost:5000/products')
@@ -26,14 +25,12 @@ const ProductPage = () => {
   }, [])
 
   useEffect(() => {
-    // console.log('come', filterItems)
     if (filterItems.length === 0) {
       setFilteredPd([])
     }
     if (filterItems.length > 0) {
       setFilteredPd([])
       filterItems.forEach(item => {
-        // console.log('item', item)
         const obj = products.find(pd => pd.category.name === item);
         setFilteredPd((prev) => [...prev, obj])
       });
@@ -50,7 +47,7 @@ const ProductPage = () => {
     }
   }
   useEffect(() => {
-    if (key && key.length > 3) setSearchPd(products.filter((pd) => pd.name.toUpperCase().includes(key.toUpperCase())))
+    if (key && key.length > 3) setSearchPd(products.filter((pd) => (pd.description.toUpperCase().includes(key.toUpperCase()) || pd.name.toUpperCase().includes(key.toUpperCase()))))
   }, [key])
   console.log(searchPd)
   return (
@@ -66,9 +63,7 @@ const ProductPage = () => {
         <div className='bg-gray-100 flex p-8 items-center'>
           <h2 className="text-2xl font-semibold mb-4 ">Categories:</h2>
           <CategoriesSwiper products={products} handleFilter={handleFilter} setFilterItems={setFilterItems} filterItems={filterItems} />
-        </div>
-        {/* <CategoriesSwiper products={products} setFilterItems={setFilterItems} filterItems={filterItems} /> */}
-        {/* <Categories setFilterItems={setFilterItems} filterItems={filterItems} products={products} /> */}
+        </div> 
       </section>
       <section className='bg-gray-100'>
         <h2 className="text-2xl font-semibold px-8 mb-4">Our Popular Products</h2>
@@ -82,7 +77,7 @@ const ProductPage = () => {
         </div>}
 
         <div className=" flex flex-wrap justify-center items-center ">
-          {key.length>3 ? searchPd.map((product) => (<ProductCard product={product} key={product._id} />)) : filteredPd.length > 0 ? filteredPd.map((product) => (
+          {key.length > 3 ? searchPd.map((product) => (<ProductCard product={product} key={product._id} />)) : filteredPd.length > 0 ? filteredPd.map((product) => (
             <ProductCard key={product._id} product={product} setProducts={setProducts} />
           )) : products.length > 0 ? products.map((product) => (
             <ProductCard key={product._id} product={product} setProducts={setProducts} />

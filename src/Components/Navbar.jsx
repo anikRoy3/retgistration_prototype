@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate, } from 'react-router-dom';
 import { contextProvider } from '../Context/Provider';
 import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { email, setEmail, cart, user, setCart, setKey,key  } = useContext(contextProvider)
+  const { email, setEmail, cart, user, setCart, setKey, key } = useContext(contextProvider)
   let count = 0
   const values = cart ? Object.values(JSON.parse(cart)) : 0
   if (values) {
@@ -13,12 +13,13 @@ const Navbar = () => {
       count += v
     }
   }
-  const wishtlistsCount = JSON.parse(localStorage.getItem('wishlists')).length
+  const wishtlistsCount = JSON.parse(localStorage.getItem('wishlists'))?.length
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const { pathname } = useLocation();
+  const navigate = useNavigate()
 
   const handleLogout = () => {
     Swal.fire({
@@ -34,12 +35,13 @@ const Navbar = () => {
         localStorage.removeItem('userId');
         setCart(localStorage.removeItem('cartItems'))
         setEmail('')
+        navigate('/login')
       }
     })
 
   }
 
-  
+
 
 
   return (

@@ -6,11 +6,6 @@ import { contextProvider } from '../Context/Provider';
 const WishLists = () => {
     const [products, setProducts] = useState([]);
     const {ids}= useContext(contextProvider)
-
-    // console.log(ids);
-    // const parsedIds = JSON.parse(ids)
-    console.log(ids)
-
     useEffect(() => {
         const fetchProducts = async () => {
             const fetchedProducts = await Promise.all(JSON.parse(ids).map(async id => {

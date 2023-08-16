@@ -20,15 +20,10 @@ export default function AddProductModal({ setProducts }) {
     }
 
     const onSubmit = ({ name, price, description, image, discount, quantity, category }) => {
-        
-        // setCtImage()
+
         const url = `https://api.imgbb.com/1/upload?key=c6d4d5097ea23cc307de3ef0ba8c19d1`;
         const formData = new FormData();
         formData.append('image', image[0]);
-        const ctObj = categoryObj(category, defalutImages[category])
-        // console.log('main obj', ctObj)
-       
-        // console.log(product)
 
         setLoading(true)
         fetch(url, {

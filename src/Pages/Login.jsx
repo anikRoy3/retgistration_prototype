@@ -3,10 +3,12 @@ import { useContext, useState } from 'react';
 import { set, useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { contextProvider } from '../Context/Provider';
+import ForgotPassword from '../Components/Utils/ForgotPassword';
 
 const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
-  const { setEmail } = useContext(contextProvider)
+  const { setEmail } = useContext(contextProvider);
+  const [way, setWay] = useState('')
   const location = useLocation()
   const {
     register,
@@ -16,7 +18,6 @@ const LoginPage = () => {
   } = useForm();
   const navigate = useNavigate();
   const from = location?.state?.from || '/';
-  console.log(from.pathname)
   const onSubmit = data => {
     console.log(data);
     fetch('http://localhost:5000/login', {
@@ -44,6 +45,12 @@ const LoginPage = () => {
   const handleInputBlur = (field) => () => {
     trigger(field);
   };
+
+  const handleForgotPassword = (way) => {
+    const forgot_password = document.getElementById('forgot_password')
+    forgot_password.showModal()
+    setWay(way)
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full space-y-8 bg-white rounded-lg shadow-lg p-8">
@@ -83,12 +90,7 @@ const LoginPage = () => {
                   minLength: {
                     value: 8,
                     message: 'Password must be at least 8 characters',
-                  },
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                    message:
-                      'Password must contain at least one letter, one number, and one special character',
-                  },
+                  }
                 })}
                 onBlur={handleInputBlur('password')}
               />
@@ -129,10 +131,10 @@ const LoginPage = () => {
             {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
           </div>
           <div>
-            {
-              errorMessage ? <p className='py-3 text-red-500'>{errorMessage} </p> : ''
-            }
+            {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
           </div>
+          <h2 onClick={() => (handleForgotPassword('link'))} className=" text-blue-500 mb-4 cursor-pointer hover:text-blue-800">Forgot Password By Link?</h2>
+          <h2 onClick={() => (handleForgotPassword('otp'))} className=" text-blue-500 mb-4 cursor-pointer hover:text-blue-800">Forgot Password by Otp?</h2>
           <div>
             <p className='py-4'>Haven't any account? <Link className='text-blue-400' to={'/signup'}>Signup</Link></p>
           </div>
@@ -143,6 +145,7 @@ const LoginPage = () => {
           />
         </motion.form>
       </div>
+      <ForgotPassword way={way} handleForgotPassword={handleForgotPassword}/>
     </div>
   );
 };
